@@ -414,7 +414,7 @@ module compressed_decoder #(
               };
             end
             else if (CVA6Cfg.RVZimop) begin
-              if ({instr_i[12], instr_i[8:2]} == 8'h60) begin
+              if ({instr_i[12:11], instr_i[7:2]} == 7'h20) begin
                 //c.mop.n -> addi x0, x0, 0 (nop)
                 instr_o = {
                   12'b0,
