@@ -393,8 +393,26 @@ module decoder
                   instr.rtype.rd,
                   instr.rtype.opcode
                 };
-              end else begin
-                illegal_instr = 1'b1;
+              end
+              // Zimop instructions
+              if (CVA6Cfg.RVZimop) begin
+                if ((instr.instr[31] == 1'b1) && (instr.instr[29:28] == 2'b00)) begin
+                  instruction_o.rd = instr.rtype.rd;
+                  instruction_o.fu = ALU;
+                  instruction_o.op = ariane_pkg::ADD;
+                  //MOP.R.n form
+                  if (instr.instr[25] == 0) begin
+                    instruction_o.rs1 = '0;
+                    instruction_o.rs2 = '0;
+                  end
+                  //MOP.RR.n form
+                  else begin
+                    instruction_o.rs1 = '0;
+                    instruction_o.rs2 = '0;
+                  end
+                end else begin
+                  illegal_instr = 1'b1;
+                end
               end
             end
             // atomically swaps values in the CSR and integer register

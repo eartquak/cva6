@@ -413,8 +413,20 @@ module compressed_decoder #(
                 riscv::OpcodeOpImm
               };
             end
-
-            if ({instr_i[12], instr_i[6:2]} == 6'b0) illegal_instr_o = 1'b1;
+            else if (CVA6Cfg.RVZimop) begin
+              if ({instr_i[12], instr_i[8:2]} == 8'h60) begin
+                //c.mop.n -> addi x0, x0, 0 (nop)
+                instr_o = {
+                  12'b0,
+                  5'b0,
+                  3'b0,
+                  5'b0,
+                  riscv::OpcodeOpImm
+                };
+              end
+              else illegal_instr_o = 1'b1;
+            end
+            else illegal_instr_o = 1'b1;
           end
 
           riscv::OpcodeC1MiscAlu: begin
